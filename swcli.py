@@ -5,7 +5,7 @@ from swapi import Swapi
 from filters import Filters
 import printer
 
-def swcli(resource, filter_cmds=[], cache=True):
+def swcli(resource, filter_cmds=None, cache=True):
     api = Swapi(cache)
     resources = api.get_root()
     if resource not in resources:
@@ -13,9 +13,10 @@ def swcli(resource, filter_cmds=[], cache=True):
 
     data = api.get_resource(resource)
 
-    filters = Filters(api)
-    for f in filter_cmds:
-        data = filters.filter_data(data, field_name=f[0], operator=f[1], value=f[2])
+    if filter_cmds:
+        filters = Filters(api)
+        for f in filter_cmds:
+            data = filters.filter_data(data, field_name=f[0], operator=f[1], value=f[2])
 
     return data
 

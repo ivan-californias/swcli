@@ -1,13 +1,14 @@
 import json
 
 def _print_txt_dict(d, fields):
+    line = []
     for k in d:
         if not fields or k in fields:
             if type(d[k]) is list:
-                print('%s: %s' % (k, d[k]), end=' ')
+                line.append('%s: %s' % (k, d[k]))
             else:
-                print('%s: "%s"' % (k, d[k]), end=' ')
-    print()
+                line.append('%s: "%s"' % (k, d[k]))
+    print(', '.join(line))
 
 def _print_txt_list(l, fields):
     for i in l:
