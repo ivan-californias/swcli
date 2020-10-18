@@ -1,4 +1,5 @@
 import re
+import threading
 
 from api import Api
 
@@ -13,6 +14,15 @@ class Filters:
         except ValueError:
             return float('nan')
 
+    def _get_property_values_append(self, item, props, values=[]):
+        if item.startswith('http'):
+            new_data = self._api.do_request(item)
+            values.append(self._get_property_value(new_data, props))
+        else:
+            values.append(self._get_property_value(item, props))
+
+        return values
+
     def _get_property_value(self, data, props):
         if len(props) == 1:
             try:
@@ -24,12 +34,13 @@ class Filters:
             return self._get_property_value(data[props[0]], props[1:])
 
         values = []
+        threads = []
         for item in data[props[0]]:
-            if item.startswith('http'):
-                new_data = self._api.do_request(item)
-                values.append(self._get_property_value(new_data, props[1:]))
-            else:
-                values.append(self._get_property_value(item, props[1:]))
+            th = threading.Thread(target=self._get_property_values_append, args=(item, props[1:], values))
+            threads.append(th)
+            th.start()
+        for th in threads:
+            th.join()
         return values
 
     def _compare_values(self, value_a, value_b, operator):
