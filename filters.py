@@ -42,6 +42,8 @@ class Filters:
 
         if operator == '=':
             return value_a == value_b
+        if operator == '!=':
+            return value_a != value_b
         if operator == '~>':
             return value_a in value_b
         if operator == '<~':

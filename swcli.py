@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser(description='Get Star Wars data from SWAPI')
     parser.add_argument('--format', choices=['json', 'text', 'list'], default='text', help='output format')
     parser.add_argument('--fields', help='print only specific fields (coma-separated list). eg: \'name,population,terrain\'')
-    parser.add_argument('--filter', nargs=3, action='append', help='property operator value. eg: \'name = Tatooine\'')
+    parser.add_argument('--filter', nargs=3, action='append', help='field_name operator value. eg: \'name = Tatooine\'')
     parser.add_argument('--nocache', action='store_true', help='disable requests cache')
     parser.add_argument('resource', help='resource to get')
     args = parser.parse_args()
