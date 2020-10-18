@@ -1,33 +1,45 @@
 import requests
+import requests_cache
 
-BASE_URL = 'https://swapi.dev/api/'
+from api import Api
 
-def call(url):
-    try:
+class Swapi(Api):
+    _page_size=10
+    _base_url = 'https://swapi.dev/api/'
+
+    def __init__(self, cache=True):
+        if cache:
+            requests_cache.install_cache('.swapi_cache', backend='sqlite', expire_after=3600)
+
+    def do_request(self, url):
         response = requests.get(url)
-        rjson = response.json()
-    except Error as err:
-        print('Error getting data from API:')
-        print(err)
-        exit(2)
+        if response.status_code != 200:
+            raise Exception('Unsucessful API response: %d' % response.status_code)
 
-    results = rjson
+        try:
+            return response.json()
+        except ValueError as err:
+            raise Exception('Invalid JSON response from API') from err
 
-    if 'results' in rjson:
-        results = rjson['results']
+    def call(self, url):
+        rjson = self.do_request(url)
+        results = rjson
 
-    if 'next' in rjson and rjson['next'] is not None:
-        next_results = call(rjson['next'])
-        results.extend(next_results)
+        if 'results' in rjson:
+            results = rjson['results']
 
-    return results
+        if 'next' in rjson and rjson['next'] is not None:
+            next_results = self.call(rjson['next'])
+            results.extend(next_results)
 
-def getRoot():
-    return call(BASE_URL)
+        return results
 
-def getResource(resource, id=0):
-    url = '%s%s/' % (BASE_URL, resource)
-    if id > 0:
-        url = '%s%d/' % (url, id)
-    return call(url)
+    def get_root(self):
+        return self.call(self._base_url)
+
+    def get_resource(self, resource, id=0):
+        url = '%s%s/' % (self._base_url, resource)
+        if id > 0:
+            url = '%s%d/' % (url, id)
+        return self.call(url)
 

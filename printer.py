@@ -48,7 +48,7 @@ def print_list(data, fields):
             if not fields or key in fields:
                 print('  - %s: %s' % (key, item[key]))
 
-def pprint(data, fmt, fields=[]):
+def print_data(data, fmt, fields=[]):
     if fmt == 'json':
         print_json(data, fields)
     elif fmt == 'list':

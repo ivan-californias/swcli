@@ -1,72 +1,75 @@
-import swapi
 import re
 
-OPERATORS = ['=', '<~', '~>', '>', '<', '>=', '<=']
+from api import Api
 
-def _parse_number(value):
-    try:
-        number = float(re.sub('[^.\-\d]', '', value))
-        return number
-    except ValueError:
-        return float('nan')
+class Filters:
+    def __init__(self, api: Api):
+        self._api = api
 
-def _get_property_value(data, props):
-    if len(props) == 1:
+    def _parse_number(self, value):
         try:
-            return data[props[0]]
-        except:
-            return ''
+            number = float(re.sub('[^.\-\d]', '', value))
+            return number
+        except ValueError:
+            return float('nan')
 
-    if type(data[props[0]]) is not list:
-        return _get_property_value(data[props[0]], props[1:])
+    def _get_property_value(self, data, props):
+        if len(props) == 1:
+            try:
+                return data[props[0]]
+            except:
+                return ''
 
-    values = []
-    for item in data[props[0]]:
-        if item.startswith('http'):
-            new_data = swapi.call(item)
-            values.append(_get_property_value(new_data, props[1:]))
-        else:
-            values.append(_get_property_value(item, props[1:]))
-    return values
+        if type(data[props[0]]) is not list:
+            return self._get_property_value(data[props[0]], props[1:])
 
-def _compare_values(value_a, value_b, operator):
-    if type(value_a) is list:
-        for value in value_a:
-            result = _compare_values(value, value_b, operator)
-            if result:
-                return result
-        return False
+        values = []
+        for item in data[props[0]]:
+            if item.startswith('http'):
+                new_data = self._api.do_request(item)
+                values.append(self._get_property_value(new_data, props[1:]))
+            else:
+                values.append(self._get_property_value(item, props[1:]))
+        return values
 
-    if operator == '=':
-        return value_a == value_b
-    if operator == '~>':
-        return value_a in value_b
-    if operator == '<~':
-        return value_b in value_a
+    def _compare_values(self, value_a, value_b, operator):
+        if type(value_a) is list:
+            for value in value_a:
+                result = self._compare_values(value, value_b, operator)
+                if result:
+                    return True
+            return False
 
-    num_a = _parse_number(value_a)
-    num_b = _parse_number(value_b)
-    if operator == '>':
-        return num_a > num_b
-    if operator == '<':
-        return num_a < num_b
-    if operator == '<=':
-        return num_a <= num_b
-    if operator == '>=':
-        return num_a >= num_b
+        if operator == '=':
+            return value_a == value_b
+        if operator == '~>':
+            return value_a in value_b
+        if operator == '<~':
+            return value_b in value_a
 
-    return False
+        num_a = self._parse_number(value_a)
+        num_b = self._parse_number(value_b)
+        if operator == '>':
+            return num_a > num_b
+        if operator == '<':
+            return num_a < num_b
+        if operator == '<=':
+            return num_a <= num_b
+        if operator == '>=':
+            return num_a >= num_b
 
-def filter_data(data, filter=[]):
-    if type(data) is not list or not filter:
-        return data
+        raise Exception('Unknown operator \'%s\'' % operator)
 
-    props = list(map(str.strip, filter[0].split(sep='.')))
-    filtered_data = []
-    for item in data:
-        cmp_value = _get_property_value(item, props)
-        if _compare_values(cmp_value, filter[2], filter[1]):
-            filtered_data.append(item)
+    def filter_data(self, data, field_name, operator, value):
+        if type(data) is not list:
+            return data
 
-    return filtered_data
+        props = list(map(str.strip, field_name.split(sep='.')))
+        filtered_data = []
+        for item in data:
+            cmp_value = self._get_property_value(item, props)
+            if self._compare_values(cmp_value, value, operator):
+                filtered_data.append(item)
+
+        return filtered_data
 
