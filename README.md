@@ -12,17 +12,17 @@ Get all starships:
 python swcli.py starships
 ```
 
-Find all starships that appeared in the film "Return of the Jedi" (output in JSON format and selecting fields):
+Find all **starships** that appeared in the film **"Return of the Jedi"** (output in JSON format and selecting fields):
 ```
 python swcli.py --format json --fields name,crew,hyperdrive_rating,manufacturer --filter films.title '=' 'Return of the Jedi' starships
 ```
 
-Find all starships that have a `hyperdrive_rating` >= 1.0:
+Find all **starships** that have a `hyperdrive_rating` >= 1.0:
 ```
 python swcli.py --format json --fields name,crew,hyperdrive_rating,manufacturer --filter hyperdrive_rating '>=' 1.0 starships
 ```
 
-Find all starships that have a `crew` between 3 and 100:
+Find all **starships** that have a `crew` between 3 and 100:
 ```
 python swcli.py --format json --fields name,crew,hyperdrive_rating,manufacturer --filter crew '>=' 3 --filter crew '<=' 100 starships
 ```
@@ -95,6 +95,8 @@ It is also possible to apply multiple filters:
 
 ## Requirements
 
+**Tested with Python 3.8**
+
 _Recomended: Create a virtual environment_
 ```
 python -m venv env
@@ -106,5 +108,10 @@ Install requirements:
 pip install -r requirements.txt
 ```
 
-**Tested with Python 3.8.5**
+## Tests
+
+Run tests with coverage metrics and report:
+```
+coverage run -m unittest tests/*_test.py && coverage report -m
+```
 
