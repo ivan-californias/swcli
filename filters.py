@@ -9,13 +9,13 @@ class Filters:
 
     def _parse_number(self, value):
         try:
-            number = float(re.sub('[^.\-\d]', '', value))
+            number = float(re.sub('[^.\-\d]', '', str(value)))
             return number
         except ValueError:
             return float('nan')
 
     def _get_property_values_append(self, item, props, values=[]):
-        if item.startswith('http'):
+        if type(item) is str and item.startswith('http'):
             new_data = self._api.do_request(item)
             values.append(self._get_property_value(new_data, props))
         else:

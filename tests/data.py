@@ -18,7 +18,7 @@ data = [
                 'category': 'pasta'
             },
             {
-                'name': 'Chocolate cake',
+                'name': 'Chocolate Cake',
                 'category': 'dessert'
             }
         ]
@@ -41,7 +41,7 @@ data = [
                 'category': 'pasta'
             },
             {
-                'name': 'Crème brûlée',
+                'name': 'Crème Brûlée',
                 'category': 'dessert'
             }
         ]
