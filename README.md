@@ -1,5 +1,5 @@
-
-[![codecov](https://codecov.io/gh/ivan-californias/swcli/branch/master/graph/badge.svg?token=ZSF51NA6X5)](undefined)
+![Python unittest](https://github.com/ivan-californias/swcli/workflows/Python%20unittest/badge.svg?branch=master)
+[![codecov](https://codecov.io/gh/ivan-californias/swcli/branch/master/graph/badge.svg?token=ZSF51NA6X5)](https://codecov.io/gh/ivan-californias/swcli/branch/master)
 
 # SWCLI (Star Wars CLI)
 
