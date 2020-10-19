@@ -1,3 +1,6 @@
+
+[![codecov](https://codecov.io/gh/ivan-californias/swcli/branch/master/graph/badge.svg?token=ZSF51NA6X5)](undefined)
+
 # SWCLI (Star Wars CLI)
 
 A CLI to fetch data from [swapi](https://swapi.dev/).
