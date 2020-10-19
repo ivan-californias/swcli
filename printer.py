@@ -14,7 +14,7 @@ def _print_txt_list(l, fields):
     for i in l:
         _print_txt_dict(i, fields)
 
-def print_text(data, fields):
+def _print_text(data, fields):
     if type(data) is list:
         _print_txt_list(data, fields)
     elif type(data) is dict:
@@ -29,7 +29,7 @@ def _filter_obj_fields(data, fields):
             obj[field] = data[field]
     return obj
 
-def print_json(data, fields):
+def _print_json(data, fields):
     if fields:
         print_data = []
         if type(data) is list:
@@ -42,7 +42,7 @@ def print_json(data, fields):
     else:
         print(json.dumps(data, indent=4, sort_keys=True))
 
-def print_list(data, fields):
+def _print_list(data, fields):
     for item in data:
         print('- %s' % item['url'])
         for key in item:
@@ -51,10 +51,10 @@ def print_list(data, fields):
 
 def print_data(data, fmt, fields=[]):
     if fmt == 'json':
-        print_json(data, fields)
+        _print_json(data, fields)
     elif fmt == 'list':
-        print_list(data, fields)
+        _print_list(data, fields)
     else:
-        print_text(data, fields)
+        _print_text(data, fields)
 
     
